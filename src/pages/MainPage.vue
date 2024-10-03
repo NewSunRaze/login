@@ -10,6 +10,6 @@ import { onMounted } from 'vue'
 
 const authStore = useAuthStore()
 onMounted(() => {
-  console.log(33)
+  console.log('log from MainPage.vue')
 })
 </script>

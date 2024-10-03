@@ -3,9 +3,10 @@ import MainPage from '../pages/MainPage.vue'
 import LoginPage from '../pages/LoginPage.vue'
 import { useAuthStore } from '../stores/auth'
 
+
 const routes = [
-  { path: '/login', component: LoginPage },
-  { path: '/', component: MainPage }
+  { path: '/', component: MainPage, meta: { requiresAuth: true } },
+  { path: '/login', component: LoginPage }
 ]
 
 const router = createRouter({
@@ -13,20 +14,29 @@ const router = createRouter({
   routes
 })
 
+// Перед каждым роутом
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
-  if (to.path !== '/login') {
+
+  // Проверяем, требуется ли аутентификация для этой страницы
+  if (to.meta.requiresAuth) {
     if (!authStore.token) {
-      return next('/login')
+      // Если токена нет, редиректим на страницу логина
+      return next({ path: '/login' })
     }
+
+    // Если токен есть, но профиль не загружен, запрашиваем данные пользователя
     if (!authStore.userProfile) {
       try {
-        await authStore.fetchUserProfile()
+        console.log('fetchUserProfile')
+        await authStore.fetchUserProfile() // Загружаем информацию о пользователе
       } catch (error) {
-        return next('/login')
+        return next({ path: '/login' }) // В случае ошибки редиректим на логин
       }
     }
   }
+
+  // Разрешаем переход на страницу
   next()
 })
 

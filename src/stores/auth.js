@@ -3,14 +3,15 @@ import { defineStore } from 'pinia'
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     userProfile: null,
-    token: null
+    token: localStorage.getItem('token') || null
   }),
   actions: {
     async login(credentials) {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 2000)) // Фейковая задержка 2 секунды
-        this.token = 'fake-token-12345' // Фейковый токен
-        await this.fetchUserProfile() // Запрашиваем профиль пользователя
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        this.token = 'fake-token-12345' 
+        localStorage.setItem('token', this.token)
+        await this.fetchUserProfile() 
       } catch (error) {
         throw new Error('Login failed')
       }

@@ -6,6 +6,10 @@
 
 <script setup>
 import { useAuthStore } from '../stores/auth'
+import { onMounted } from 'vue'
 
 const authStore = useAuthStore()
+onMounted(() => {
+  console.log(33)
+})
 </script>
